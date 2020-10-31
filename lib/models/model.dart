@@ -1,5 +1,5 @@
 abstract class Model {
   String id;
-  fromMap() {}
-  toMap() {}
+  fromJson() {}
+  toJson() {}
 }
