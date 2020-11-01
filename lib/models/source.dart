@@ -7,6 +7,7 @@ Source sourceFromJson(String str) => Source.fromJson(json.decode(str));
 String sourceToJson(Source data) => json.encode(data.toJson());
 
 class Source extends Model {
+  static final tableName = "transactionSource";
   Source({
     this.id,
     this.source,

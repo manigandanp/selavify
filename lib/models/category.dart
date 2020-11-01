@@ -7,29 +7,31 @@ Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
 String categoryToJson(Category data) => json.encode(data.toJson());
 
 class Category extends Model {
-    Category({
-        this.id,
-        this.category,
-        this.createdTimestamp,
-        this.updatedTimestamp,
-    });
+  static final tableName = "category";
 
-    String id;
-    String category;
-    int createdTimestamp;
-    int updatedTimestamp;
+  Category({
+    this.id,
+    this.category,
+    this.createdTimestamp,
+    this.updatedTimestamp,
+  });
 
-    factory Category.fromJson(Map<String, dynamic> json) => Category(
+  String id;
+  String category;
+  int createdTimestamp;
+  int updatedTimestamp;
+
+  factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["id"],
         category: json["category"],
         createdTimestamp: json["createdTimestamp"],
         updatedTimestamp: json["updatedTimestamp"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "category": category,
         "createdTimestamp": createdTimestamp,
         "updatedTimestamp": updatedTimestamp,
-    };
+      };
 }

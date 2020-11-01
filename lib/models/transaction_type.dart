@@ -9,6 +9,7 @@ String transactionTypeToJson(TransactionType data) =>
     json.encode(data.toJson());
 
 class TransactionType extends Model {
+  static final tableName = "transactionType";
   TransactionType({
     this.id,
     this.transactionType,

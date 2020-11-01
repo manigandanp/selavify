@@ -8,6 +8,8 @@ Transaction transactionFromJson(String str) =>
 String transactionToJson(Transaction data) => json.encode(data.toJson());
 
 class Transaction extends Model {
+  static final tableName = "selavifyTransaction";
+
   Transaction({
     this.id,
     this.transactionTitle,
