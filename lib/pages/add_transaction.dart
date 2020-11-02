@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 import 'package:selavify/services/transaction_service.dart';
+import 'package:selavify/widgets/custom_dropdown.dart';
 
 class AddTransaction extends StatefulWidget {
   static final routeName = "/add_transaction";
@@ -23,7 +24,6 @@ class _AddTransactionState extends State<AddTransaction> {
   final tType = {
     "income_id": "Income",
     "expanses_id": "Expanses",
-    "new": "Add new"
   };
 
   final source = {
@@ -55,7 +55,8 @@ class _AddTransactionState extends State<AddTransaction> {
           children: [
             datePicker,
             spacer,
-            transactionTypeDropDown(context, transactionTypeItems, categoryKey),
+            transactionTypeCustomDropdown(transactionTypeItems),
+            // transactionTypeDropDown(context, transactionTypeItems, categoryKey),
             spacer,
             sourceTypeDropDown(context, sourceItems, _sourceKey),
             spacer,
@@ -73,6 +74,9 @@ class _AddTransactionState extends State<AddTransaction> {
   final Widget spacer = SizedBox(
     height: 15,
   );
+
+  Widget transactionTypeCustomDropdown(tType) => DropdownWithBottomModal(
+      attribute: "transactionTypeId", items: tType, hint: "Transaction Type");
 
   List<DropdownMenuItem> dropDownItems(items) => items.keys
       .map<DropdownMenuItem>((t) => DropdownMenuItem(
