@@ -35,7 +35,7 @@ class Transaction extends Model {
   factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
         id: json["id"],
         transactionTitle: json["transactionTitle"],
-        transactionAmount: double.parse(json["transactionAmount"]),
+        transactionAmount: double.parse(json["transactionAmount"].toString()),
         transactionTimestamp: json["transactionTimestamp"],
         transactionTypeId: json["transactionTypeId"],
         categoryId: json["categoryId"],
