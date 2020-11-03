@@ -13,11 +13,6 @@ class AddTransaction extends StatefulWidget {
 
 class _AddTransactionState extends State<AddTransaction> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  final GlobalKey<FormBuilderState> _categoryKey =
-      GlobalKey<FormBuilderState>();
-  final GlobalKey<FormBuilderState> _sourceKey = GlobalKey<FormBuilderState>();
-  final GlobalKey<FormBuilderState> _transactionKey =
-      GlobalKey<FormBuilderState>();
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -29,14 +24,12 @@ class _AddTransactionState extends State<AddTransaction> {
   final source = {
     "account_id": "Account",
     "cash_id": "Cash",
-    "new": "Add New",
   };
 
   final categories = {
     "cat_id_1": "Salary",
     "cat_id_2": "Grocery",
     "cat_id_3": "Entertainment",
-    "new": "Add New",
   };
 
   Widget forms({
@@ -45,9 +38,6 @@ class _AddTransactionState extends State<AddTransaction> {
     sourceItems,
     categoryItems,
     formKey,
-    transactionTypeKey,
-    categoryKey,
-    sourceKey,
   }) =>
       FormBuilder(
         key: formKey,
@@ -56,13 +46,12 @@ class _AddTransactionState extends State<AddTransaction> {
             datePicker,
             spacer,
             transactionTypeCustomDropdown(transactionTypeItems),
-            // transactionTypeDropDown(context, transactionTypeItems, categoryKey),
             spacer,
-            sourceTypeDropDown(context, sourceItems, _sourceKey),
+            sourceCustomDropdown(sourceItems),
             spacer,
-            categoryDropDown(context, categories, categoryKey),
+            categoryCustomDropdown(categories),
             spacer,
-            formTextField("transactionTitle", "Transaction Tilte", "Title"),
+            formTextField("transactionTitle", "Transaction Tilte"),
             spacer,
             transactionAmount,
             spacer,
@@ -76,59 +65,27 @@ class _AddTransactionState extends State<AddTransaction> {
   );
 
   Widget transactionTypeCustomDropdown(tType) => DropdownWithBottomModal(
-      attribute: "transactionTypeId", items: tType, hint: "Transaction Type");
-
-  List<DropdownMenuItem> dropDownItems(items) => items.keys
-      .map<DropdownMenuItem>((t) => DropdownMenuItem(
-            child: Text(items[t]),
-            value: t,
-          ))
-      .toList();
-
-  Widget transactionTypeDropDown(context, items, categoryKey) => buildDropdown(
         attribute: "transactionTypeId",
-        items: items,
+        items: tType,
         hint: "Transaction Type",
-        onChange: (value) {
-          if (value == "new")
-            addNewEntry(
-              context,
-              "Add New Transaction Type",
-              categoryKey,
-              formTextField(
-                  "transactionType", "Transaction Type", "Transaction Type"),
-            );
-        },
+        validators: [FormBuilderValidators.required()],
+        childForm: formTextField("transactionType", "Transaction Type"),
       );
 
-  Widget sourceTypeDropDown(context, items, sourceKey) => buildDropdown(
-        attribute: "transactionSourceId",
-        items: items,
+  Widget sourceCustomDropdown(sources) => DropdownWithBottomModal(
+        attribute: "sourceId",
+        items: sources,
         hint: "Source",
-        onChange: (value) {
-          if (value == "new")
-            addNewEntry(
-              context,
-              "Add New Source",
-              sourceKey,
-              formTextField("source", "Source", "Source"),
-            );
-        },
+        validators: [FormBuilderValidators.required()],
+        childForm: formTextField("source", "Source"),
       );
 
-  Widget categoryDropDown(context, items, categoryKey) => buildDropdown(
+  Widget categoryCustomDropdown(categories) => DropdownWithBottomModal(
         attribute: "categoryId",
-        items: items,
+        items: categories,
         hint: "Category",
-        onChange: (value) {
-          if (value == "new")
-            addNewEntry(
-              context,
-              "Add New Category",
-              categoryKey,
-              formTextField("category", "Category", "Category"),
-            );
-        },
+        validators: [FormBuilderValidators.required()],
+        childForm: formTextField("category", "Category"),
       );
 
   final Widget datePicker = FormBuilderDateTimePicker(
@@ -143,11 +100,11 @@ class _AddTransactionState extends State<AddTransaction> {
     valueTransformer: (dateStr) => dateStr.millisecondsSinceEpoch,
   );
 
-  Widget formTextField(attribute, labelText, hintText) => FormBuilderTextField(
+  Widget formTextField(attribute, labelText) => FormBuilderTextField(
         attribute: attribute, //"transactionTitle",
         decoration: InputDecoration(
           labelText: labelText, //"Transaction Title",
-          hintText: hintText, //"Title",
+          hintText: labelText, //"Title",
         ),
         validators: [
           FormBuilderValidators.required(),
@@ -172,6 +129,7 @@ class _AddTransactionState extends State<AddTransaction> {
           if (formKey.currentState.saveAndValidate()) {
             print(formKey.currentState.value);
             TransactionService.addTransaction(formKey.currentState.value);
+            Navigator.of(context).pop();
           } else {
             _scaffoldKey.currentState.hideCurrentSnackBar();
             _scaffoldKey.currentState.showSnackBar(
@@ -183,56 +141,6 @@ class _AddTransactionState extends State<AddTransaction> {
         },
         child: Text("Submit"),
       );
-
-  Future addNewEntry(context, title, formKey, textField) =>
-      showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10.0),
-          ),
-        ),
-        isScrollControlled: true,
-        context: context,
-        builder: (context) => SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  ListTile(
-                    title: Text(title),
-                  ),
-                  FormBuilder(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        textField,
-                        spacer,
-                        submitButton(context, formKey),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-
-  Widget buildDropdown({attribute, items, hint, onChange}) {
-    return FormBuilderDropdown(
-      attribute: attribute,
-      items: dropDownItems(items),
-      hint: Text(hint),
-      onChanged: onChange,
-      validators: [
-        FormBuilderValidators.required(errorText: "Please select something")
-      ],
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,9 +158,6 @@ class _AddTransactionState extends State<AddTransaction> {
               transactionTypeItems: tType,
               categoryItems: categories,
               sourceItems: source,
-              transactionTypeKey: _transactionKey,
-              sourceKey: _sourceKey,
-              categoryKey: _categoryKey,
             ),
             padding: EdgeInsets.all(15),
           ),
