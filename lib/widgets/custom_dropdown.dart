@@ -14,7 +14,7 @@ class DropdownWithBottomModal<T> extends StatefulWidget {
     this.attribute,
     this.hint,
     this.decoration,
-    this.validators,
+    this.validators = const [],
     this.childForm,
   });
 
@@ -31,23 +31,70 @@ class _DropdownWithBottomModalState extends State<DropdownWithBottomModal> {
     child: Text("Add New"),
   );
 
-  static void _showModalSheet({value, parentContext, Widget child}) {
+  final GlobalKey<FormBuilderState> innerFormKey =
+      GlobalKey<FormBuilderState>();
+
+  Widget innerForm(child) => SingleChildScrollView(
+        child: Container(
+          child: FormBuilder(
+            key: innerFormKey,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.ac_unit_sharp),
+                  title: Text(
+                    "Add New",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                child,
+                SizedBox(
+                  height: 10,
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      "Save",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+
+  void _showModalSheet({value, parentContext, Widget child}) {
     if (value == "add_new") {
       showModalBottomSheet(
         context: parentContext,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10.0),
+            top: Radius.circular(15.0),
           ),
         ),
         isScrollControlled: true,
-        builder: (ctx) => Container(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(parentContext).viewInsets.bottom,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: child,
+        builder: (ctx) => SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(ctx).viewInsets.bottom,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: innerForm(child),
+            ),
           ),
         ),
       );
