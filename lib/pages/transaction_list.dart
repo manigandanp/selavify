@@ -14,7 +14,10 @@ class _TransactionListState extends State<TransactionList> {
   @override
   void initState() {
     super.initState();
-    transactions = TransactionService.fetchTransactions();
+    transactions = Future.delayed(
+      Duration(seconds: 3),
+      () => TransactionService.fetchTransactions(),
+    );
   }
 
   Widget emptyTransaction = Center(
@@ -48,10 +51,16 @@ class _TransactionListState extends State<TransactionList> {
                 : emptyTransaction;
           } else if (snapshot.hasError) {
             return Center(
-              child: Text("Error while fetching data from db"),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Error while fetching data from db"),
+                  Text(snapshot.error.toString()),
+                ],
+              ),
             );
           }
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         },
       ),
       drawer: Drawer(
