@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:selavify/models/transaction.dart';
 import 'package:selavify/services/transaction_service.dart';
 import 'package:selavify/widgets/custom_dropdown.dart';
 
@@ -124,21 +125,24 @@ class _AddTransactionState extends State<AddTransaction> {
     ],
   );
 
+  void _submitAction(formKey) async {
+    if (formKey.currentState.saveAndValidate()) {
+      print(formKey.currentState.value);
+      Map<String, dynamic> response =
+          await TransactionService.addTransaction(formKey.currentState.value);
+      Navigator.of(context).pop(Transaction.fromJson(response));
+    } else {
+      _scaffoldKey.currentState.hideCurrentSnackBar();
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          content: Text("Some thing went wrong"),
+        ),
+      );
+    }
+  }
+
   Widget submitButton(context, formKey) => RaisedButton(
-        onPressed: () {
-          if (formKey.currentState.saveAndValidate()) {
-            print(formKey.currentState.value);
-            TransactionService.addTransaction(formKey.currentState.value);
-            Navigator.of(context).pop();
-          } else {
-            _scaffoldKey.currentState.hideCurrentSnackBar();
-            _scaffoldKey.currentState.showSnackBar(
-              SnackBar(
-                content: Text("Some thing went wrong"),
-              ),
-            );
-          }
-        },
+        onPressed: () => _submitAction(formKey),
         child: Text("Submit"),
       );
 

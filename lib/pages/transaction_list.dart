@@ -10,11 +10,12 @@ class TransactionList extends StatefulWidget {
 }
 
 class _TransactionListState extends State<TransactionList> {
-  Future<List<Transaction>> transactions;
+  Future<List<Transaction>> transactionsFuture;
+  List<Transaction> transactions;
   @override
   void initState() {
     super.initState();
-    transactions = Future.delayed(
+    transactionsFuture = Future.delayed(
       Duration(seconds: 3),
       () => TransactionService.fetchTransactions(),
     );
@@ -31,9 +32,9 @@ class _TransactionListState extends State<TransactionList> {
       );
 
   Widget transactionItem(transaction) => ListTile(
-        title: Text(transaction['id']),
-        trailing: Text(transaction['transactionAmount'].toString()),
-        leading: Text(transaction['categoryId']),
+        title: Text(transaction['transactionTitle']),
+        trailing: Text(transaction['transactionTypeId'].toString()),
+        leading: Text(transaction['transactionAmount'].toString()),
       );
 
   @override
@@ -43,9 +44,10 @@ class _TransactionListState extends State<TransactionList> {
         title: Text("Selavify"),
       ),
       body: FutureBuilder<List<Transaction>>(
-        future: transactions,
+        future: transactionsFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            transactions = snapshot.data;
             return snapshot.data.length > 0
                 ? transactionsListView(snapshot.data)
                 : emptyTransaction;
@@ -67,8 +69,15 @@ class _TransactionListState extends State<TransactionList> {
         child: Text("Menu"),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed(AddTransaction.routeName);
+        onPressed: () async {
+          var newTransaction =
+              await Navigator.of(context).pushNamed(AddTransaction.routeName);
+          if (newTransaction == null)
+            return;
+          else
+            setState(() {
+              transactions.add(newTransaction);
+            });
         },
         child: Icon(Icons.add),
       ),

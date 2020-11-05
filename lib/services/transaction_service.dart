@@ -16,8 +16,9 @@ class TransactionService {
       "updatedTimestap": DateTime.now().millisecondsSinceEpoch,
       ...tr
     };
+
     int response = await DBService.insert(
-        Transaction.tableName, Transaction.fromJson(transaction));
-    return response > 0 ? transaction : null;
+        Transaction.tableName, Transaction.fromJson({...transaction}));
+    return response > 0 ? {...transaction} : null;
   }
 }
