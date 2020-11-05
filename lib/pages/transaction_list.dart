@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:selavify/models/transaction.dart';
 import 'package:selavify/pages/add_transaction.dart';
 import 'package:selavify/services/transaction_service.dart';
@@ -25,17 +26,60 @@ class _TransactionListState extends State<TransactionList> {
     child: Text("No Transactions!!"),
   );
 
-  Widget transactionsListView(transactions) => ListView.builder(
-        itemCount: transactions.length,
-        itemBuilder: (BuildContext ctx, int i) =>
-            transactionItem(transactions[i].toJson()),
+  Widget transactionsListView(transactions) => Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: ListView.builder(
+          itemCount: transactions.length,
+          itemBuilder: (BuildContext ctx, int i) =>
+              transactionItem(transactions[i].toJson()),
+        ),
       );
 
-  Widget transactionItem(transaction) => ListTile(
-        title: Text(transaction['transactionTitle']),
-        trailing: Text(transaction['transactionTypeId'].toString()),
-        leading: Text(transaction['transactionAmount'].toString()),
+  Widget transactionItem(transaction) => Dismissible(
+        key: ValueKey(transaction['id']),
+        child: Card(
+          color: transaction['transactionTypeId'] == "income_id"
+              ? Colors.green[50]
+              : Colors.red[50],
+          elevation: 5,
+          child: ListTile(
+            title: titleWidget(transaction['transactionTitle']),
+            subtitle: Text(
+              DateFormat("dd/MM/yyyy hh:ss").format(
+                DateTime.fromMillisecondsSinceEpoch(
+                  transaction['transactionTimestamp'],
+                ),
+              ),
+            ),
+            leading:
+                transactionType(transaction['transactionTypeId'].toString()),
+            trailing: amountWidget(transaction['transactionAmount'].toString()),
+          ),
+        ),
       );
+
+  Widget amountWidget(amount) => Text(
+        "₹ ${amount}",
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      );
+
+  Widget titleWidget(title) => Text(
+        title,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      );
+
+  Widget transactionType(transactionTypeId) {
+    return CircleAvatar(
+      backgroundColor: Colors.pink[50],
+      child: Text(
+        transactionTypeId == "income_id" ? "I" : "E",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -10,6 +10,7 @@ void main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(
+        primarySwatch: Colors.pink,
         inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(),
             enabledBorder: OutlineInputBorder(),
