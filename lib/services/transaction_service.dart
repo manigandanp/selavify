@@ -9,13 +9,15 @@ class TransactionService {
     return _results.map((tr) => Transaction.fromJson(tr)).toList();
   }
 
-  static Future<int> addTransaction(tr) async {
-    final metaData = {
+  static Future<Map<String, dynamic>> addTransaction(tr) async {
+    final transaction = {
       "id": new Uuid().v4(),
       "createdTimestamp": DateTime.now().millisecondsSinceEpoch,
       "updatedTimestap": DateTime.now().millisecondsSinceEpoch,
+      ...tr
     };
-    return await DBService.insert(
-        Transaction.tableName, Transaction.fromJson({...tr, ...metaData}));
+    int response = await DBService.insert(
+        Transaction.tableName, Transaction.fromJson(transaction));
+    return response > 0 ? transaction : null;
   }
 }
