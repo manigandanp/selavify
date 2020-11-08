@@ -1,6 +1,13 @@
 import 'dart:async';
 import 'package:path/path.dart';
+import 'package:selavify/models/category.dart';
 import 'package:selavify/models/model.dart';
+import 'package:selavify/models/source.dart';
+import 'package:selavify/models/transaction_type.dart';
+import 'package:selavify/services/category_service.dart';
+import 'package:selavify/services/source_service.dart';
+import 'package:selavify/services/transaction_service.dart';
+import 'package:selavify/services/transaction_type_service.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class DBService {
@@ -24,21 +31,27 @@ abstract class DBService {
   }
 
   static void _onCreate(Database db, int version) async {
-    await db.execute(
-        'create table selavifyTransaction (id PRIMARY KEY NOT NULL UNIQUE, transactionTitle Text, transactionAmount real, transactionTimestamp integer, createdTimestamp Integer, updatedTimestamp integer, categoryId Text, transactionTypeId Text, transactionSourceId Text)');
+    await db.execute(TransactionService.createTableSqlStmt);
+    await db.execute(CategoryService.createTableSqlStmt);
+    await db.execute(SourceService.createTableSqlStmt);
+    await db.execute(TransactionTypeService.createTableSqlStmt);
+
+    String transactionTypeValues = _toValues(TransactionTypeService.values);
+    String categoryValues = _toValues(CategoryService.values);
+    String sourceValues = _toValues(SourceService.values);
 
     await db.execute(
-        'create Table transactionType (id PRIMARY key not NULL UNIQUE, transactionTypeTitle Text, createdTimestamp integer)');
-
-    await db.execute(
-        'create table category (id PRIMARY key not NULL UNIQUE, category Text, createdTimestamp integer)');
-
-    await db.execute(
-        'create table transactionSource (id PRIMARY key not NULL UNIQUE, source Text, createdTimestamp integer)');
-
-    await db.execute(
-        'INSERT into transactionType values ("0bfbce69-177c-42bc-80a3-6c594a961529", "Income", 1604126154709), ("278ee9d2-1008-408d-a34d-d180d836996c", "Expanses", 1604126359711), ("25db44bb-5e87-4de2-8c08-d7b72eea9a02", "Investment", 1604126400715), ("996419a3-ef10-4c94-9c1f-e035eb4c18ec", "Withdrawl", 1604126400715)');
+        'insert into ${TransactionType.tableName} values $transactionTypeValues');
+    await db
+        .execute('insert into ${Category.tableName} values $categoryValues');
+    await db.execute('insert into ${Source.tableName} values $sourceValues');
   }
+
+  static String _toValues(models) => models
+      .map((model) =>
+          '("${model.id}", "${model.title}", "${model.createdTimestamp}")')
+      .toList()
+      .join(", ");
 
   static Future<List<Map<String, dynamic>>> query(String tableName) async =>
       _db.query(tableName);
@@ -52,4 +65,16 @@ abstract class DBService {
 
   static Future<int> delete(String tableName, Model model) async =>
       await _db.delete(tableName, where: 'id = ?', whereArgs: [model.id]);
+
+  static Future<Map<String, dynamic>> queryDefaultValues() async {
+    var categories = await query(Category.tableName);
+    var transactionTypes = await query(TransactionType.tableName);
+    var sources = await query(Source.tableName);
+    return {
+      "category": categories.map((c) => Category.fromJson(c)).toList(),
+      "transactionType":
+          transactionTypes.map((t) => TransactionType.fromJson(t)).toList(),
+      "source": sources.map((s) => Source.fromJson(s)).toList(),
+    };
+  }
 }
