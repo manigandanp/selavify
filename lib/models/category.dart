@@ -11,26 +11,26 @@ class Category extends Model {
 
   Category({
     this.id,
-    this.category,
+    this.title,
     this.createdTimestamp,
     this.updatedTimestamp,
   });
 
   String id;
-  String category;
+  String title;
   int createdTimestamp;
   int updatedTimestamp;
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
         id: json["id"],
-        category: json["category"],
+        title: json["title"],
         createdTimestamp: json["createdTimestamp"],
         updatedTimestamp: json["updatedTimestamp"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "category": category,
+        "title": title,
         "createdTimestamp": createdTimestamp,
         "updatedTimestamp": updatedTimestamp,
       };

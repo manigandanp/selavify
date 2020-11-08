@@ -55,9 +55,4 @@ class Transaction extends Model {
         "createdTimestamp": createdTimestamp,
         "updatedTimestamp": updatedTimestamp,
       };
-
-  @override
-  String toString() {
-    return json.encode(toJson());
-  }
 }

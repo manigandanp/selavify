@@ -10,26 +10,26 @@ class Source extends Model {
   static final tableName = "transactionSource";
   Source({
     this.id,
-    this.source,
+    this.title,
     this.createdTimestamp,
     this.updatedTimestamp,
   });
 
   String id;
-  String source;
+  String title;
   int createdTimestamp;
   int updatedTimestamp;
 
   factory Source.fromJson(Map<String, dynamic> json) => Source(
         id: json["id"],
-        source: json["source"],
+        title: json["title"],
         createdTimestamp: json["createdTimestamp"],
         updatedTimestamp: json["updatedTimestamp"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "source": source,
+        "title": title,
         "createdTimestamp": createdTimestamp,
         "updatedTimestamp": updatedTimestamp,
       };

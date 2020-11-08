@@ -12,27 +12,27 @@ class TransactionType extends Model {
   static final tableName = "transactionType";
   TransactionType({
     this.id,
-    this.transactionType,
+    this.title,
     this.createdTimestamp,
     this.updatedTimestamp,
   });
 
   String id;
-  String transactionType;
+  String title;
   int createdTimestamp;
   int updatedTimestamp;
 
   factory TransactionType.fromJson(Map<String, dynamic> json) =>
       TransactionType(
         id: json["id"],
-        transactionType: json["transactionType"],
+        title: json["title"],
         createdTimestamp: json["createdTimestamp"],
         updatedTimestamp: json["updatedTimestamp"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "transactionType": transactionType,
+        "title": title,
         "createdTimestamp": createdTimestamp,
         "updatedTimestamp": updatedTimestamp,
       };
