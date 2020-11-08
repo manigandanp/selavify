@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:selavify/models/model.dart';
 
 class DropdownWithBottomModal<T> extends StatefulWidget {
-  final Map<String, dynamic> items;
+  final List<Model> items;
   final String attribute;
   final String hint;
   final InputDecoration decoration;
@@ -104,11 +105,11 @@ class _DropdownWithBottomModalState extends State<DropdownWithBottomModal> {
   @override
   void initState() {
     menuItems = [
-      ...widget.items.keys
+      ...widget.items
           .map<DropdownMenuItem>(
-            (key) => DropdownMenuItem(
-              value: key,
-              child: Text(widget.items[key]),
+            (model) => DropdownMenuItem(
+              value: model.id,
+              child: Text(model.title),
             ),
           )
           .toList(),
