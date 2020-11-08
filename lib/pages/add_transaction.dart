@@ -1,7 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
+import 'package:selavify/models/category.dart';
+import 'package:selavify/models/source.dart';
 import 'package:selavify/models/transaction.dart';
+import 'package:selavify/models/transaction_type.dart';
+import 'package:selavify/services/db_service.dart';
 import 'package:selavify/services/transaction_service.dart';
 import 'package:selavify/widgets/custom_dropdown.dart';
 
@@ -17,21 +22,7 @@ class _AddTransactionState extends State<AddTransaction> {
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final tType = {
-    "income_id": "Income",
-    "expanses_id": "Expanses",
-  };
-
-  final source = {
-    "account_id": "Account",
-    "cash_id": "Cash",
-  };
-
-  final categories = {
-    "cat_id_1": "Salary",
-    "cat_id_2": "Grocery",
-    "cat_id_3": "Entertainment",
-  };
+  Future<Map<String, dynamic>> dropdownValues;
 
   Widget forms({
     context,
@@ -50,7 +41,7 @@ class _AddTransactionState extends State<AddTransaction> {
             spacer,
             sourceCustomDropdown(sourceItems),
             spacer,
-            categoryCustomDropdown(categories),
+            categoryCustomDropdown(categoryItems),
             spacer,
             formTextField("transactionTitle", "Transaction Tilte"),
             spacer,
@@ -127,7 +118,6 @@ class _AddTransactionState extends State<AddTransaction> {
 
   void _submitAction(formKey) async {
     if (formKey.currentState.saveAndValidate()) {
-      print(formKey.currentState.value);
       Map<String, dynamic> response =
           await TransactionService.addTransaction(formKey.currentState.value);
       Navigator.of(context).pop(Transaction.fromJson(response));
@@ -147,25 +137,47 @@ class _AddTransactionState extends State<AddTransaction> {
       );
 
   @override
+  void initState() {
+    super.initState();
+    dropdownValues = DBService.queryDefaultValues();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Add Transaction"),
       ),
-      body: Builder(
-        builder: (context) => SingleChildScrollView(
-          child: Padding(
-            child: forms(
-              context: context,
-              formKey: _fbKey,
-              transactionTypeItems: tType,
-              categoryItems: categories,
-              sourceItems: source,
-            ),
-            padding: EdgeInsets.all(15),
-          ),
-        ),
+      body: FutureBuilder(
+        future: dropdownValues,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Error loading dropdownValues " + snapshot.error),
+            );
+          } else if (snapshot.hasData) {
+            List<TransactionType> tType = snapshot.data["transactionType"];
+            List<Category> category = snapshot.data["category"];
+            List<Source> source = snapshot.data["source"];
+
+            return SingleChildScrollView(
+              child: Padding(
+                child: forms(
+                  context: context,
+                  formKey: _fbKey,
+                  transactionTypeItems: tType,
+                  categoryItems: category,
+                  sourceItems: source,
+                ),
+                padding: EdgeInsets.all(15),
+              ),
+            );
+          } else
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+        },
       ),
     );
   }
