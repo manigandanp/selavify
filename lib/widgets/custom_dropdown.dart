@@ -10,12 +10,14 @@ class DropdownWithBottomModal<T> extends StatefulWidget {
   final List<FormFieldValidator<T>> validators;
   final Widget childForm;
 
+  final _addNewId = "add_new";
+
   DropdownWithBottomModal({
     @required this.items,
     this.attribute,
     this.hint,
     this.decoration,
-    this.validators = const [],
+    this.validators,
     this.childForm,
   });
 
@@ -27,10 +29,18 @@ class DropdownWithBottomModal<T> extends StatefulWidget {
 class _DropdownWithBottomModalState extends State<DropdownWithBottomModal> {
   List<DropdownMenuItem> menuItems;
 
-  DropdownMenuItem addNewMenuItem = DropdownMenuItem(
-    value: "add_new",
-    child: Text("Add New"),
-  );
+  DropdownMenuItem addNewMenuItem() => DropdownMenuItem(
+        value: widget._addNewId,
+        child: Builder(
+          builder: (ctx) => Text(
+            "Add New",
+            style: TextStyle(
+              color: Theme.of(ctx).primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
 
   final GlobalKey<FormBuilderState> innerFormKey =
       GlobalKey<FormBuilderState>();
@@ -39,39 +49,43 @@ class _DropdownWithBottomModalState extends State<DropdownWithBottomModal> {
         child: Container(
           child: FormBuilder(
             key: innerFormKey,
-            child: Column(
-              children: [
-                ListTile(
-                  leading: Icon(Icons.ac_unit_sharp),
-                  title: Text(
-                    "Add New",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                child,
-                SizedBox(
-                  height: 10,
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                top: 8.0,
+              ),
+              child: Column(
+                children: [
+                  Center(
                     child: Text(
-                      "Save",
+                      "Add New Item",
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                )
-              ],
+                  SizedBox(
+                    height: 20,
+                  ),
+                  child,
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -113,7 +127,7 @@ class _DropdownWithBottomModalState extends State<DropdownWithBottomModal> {
             ),
           )
           .toList(),
-      addNewMenuItem
+      addNewMenuItem()
     ];
     super.initState();
   }
@@ -123,7 +137,13 @@ class _DropdownWithBottomModalState extends State<DropdownWithBottomModal> {
     return FormBuilderDropdown(
       attribute: widget.attribute,
       decoration: widget.decoration ?? new InputDecoration(),
-      validators: widget.validators,
+      validators: [
+        FormBuilderValidators.required(),
+        (val) {
+          if (val.toLowerCase() == widget._addNewId)
+            return "Value must not be Add New";
+        },
+      ],
       hint: Text(widget.hint),
       items: menuItems,
       onChanged: (value) => _showModalSheet(

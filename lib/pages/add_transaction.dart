@@ -60,7 +60,6 @@ class _AddTransactionState extends State<AddTransaction> {
         attribute: "transactionTypeId",
         items: tType,
         hint: "Transaction Type",
-        validators: [FormBuilderValidators.required()],
         childForm: formTextField("transactionType", "Transaction Type"),
       );
 
@@ -68,7 +67,6 @@ class _AddTransactionState extends State<AddTransaction> {
         attribute: "sourceId",
         items: sources,
         hint: "Source",
-        validators: [FormBuilderValidators.required()],
         childForm: formTextField("source", "Source"),
       );
 
@@ -76,7 +74,6 @@ class _AddTransactionState extends State<AddTransaction> {
         attribute: "categoryId",
         items: categories,
         hint: "Category",
-        validators: [FormBuilderValidators.required()],
         childForm: formTextField("category", "Category"),
       );
 
@@ -125,15 +122,21 @@ class _AddTransactionState extends State<AddTransaction> {
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
-          content: Text("Some thing went wrong"),
+          content: Text("Something went wrong"),
         ),
       );
     }
   }
 
-  Widget submitButton(context, formKey) => RaisedButton(
+  Widget submitButton(context, formKey) => ElevatedButton(
         onPressed: () => _submitAction(formKey),
-        child: Text("Submit"),
+        child: Text(
+          "Submit",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       );
 
   @override
