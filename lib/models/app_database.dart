@@ -17,7 +17,9 @@ LazyDatabase _openConnection({dbName}) {
   return LazyDatabase(
     () async {
       final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(p.join(dbFolder.path, dbName ?? 'db.sqlite'));
+      final dbPath = p.join(dbFolder.path, dbName ?? 'db.sqlite');
+      final file = File(dbPath);
+      // deleteDatabase(dbPath);
       return VmDatabase(file, logStatements: true);
     },
   );
