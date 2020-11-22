@@ -1,9 +1,8 @@
-import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
 import 'package:selavify/models/app_database.dart';
 
 void main() {
@@ -31,8 +30,8 @@ void main() {
 
       expect(cat.first.title, "some cat title");
 
-      CategoriesCompanion category = CategoriesCompanion(
-          id: Value(cat.first.id), title: Value("updated cat title"));
+      Category category = cat.first.copyWith(title: "updated cat title");
+
       await db.categoryDao.updateCategory(category);
       final updatedCat = await db.categoryDao.getAllCategories();
       expect(updatedCat.first.title, "updated cat title");
@@ -65,10 +64,8 @@ void main() {
 
       expect(src.first.title, "some source title");
 
-      SourcesCompanion source = SourcesCompanion(
-        id: Value(src.first.id),
-        title: Value("updated source title"),
-      );
+      Source source = src.first.copyWith(title: "updated source title");
+
       await db.sourceDao.updateSource(source);
       final updatedSrc = await db.sourceDao.getAllSources();
       expect(updatedSrc.first.title, "updated source title");
@@ -101,10 +98,9 @@ void main() {
 
       expect(tType.first.title, "some tType title");
 
-      TransactionTypesCompanion tTypeNew = TransactionTypesCompanion(
-        id: Value(tType.first.id),
-        title: Value("updated ttype title"),
-      );
+      TransactionType tTypeNew =
+          tType.first.copyWith(title: "updated ttype title");
+
       await db.transactionTypeDao.updateTransactionType(tTypeNew);
       final updatedtType = await db.transactionTypeDao.getAllTransactionTypes();
       expect(updatedtType.first.title, "updated ttype title");
@@ -179,15 +175,10 @@ void main() {
       expect(allTransaction.length, 1);
       expect(allTransaction.first.title, "transaction title");
 
-      TransactionsCompanion trans = TransactionsCompanion(
-        id: Value(allTransaction.first.id),
-        title: Value("updated transaction title"),
-        amount: Value(290012),
-        categoryId: Value(secondCatId),
-        sourceId: Value(allTransaction.first.sourceId),
-        transactionTypeId: Value(allTransaction.first.transactionTypeId),
-        transactionTimestamp: Value(allTransaction.first.transactionTimestamp),
-      );
+      NewTransaction trans = allTransaction.first.copyWith(
+          title: "updated transaction title",
+          amount: 290012,
+          categoryId: secondCatId);
 
       await db.transactionDao.updateTransaction(trans);
 
@@ -283,6 +274,94 @@ void main() {
       expect(tTypeTitles, ["some ttype title"]);
 
       expect(trDates, expextedDates);
+    }, count: 1));
+  });
+
+  test("fetch transactions by timestamp with from time", () async {
+    await db.categoryDao.createCategory("some cat title");
+    await db.transactionTypeDao.createTransactionType("some ttype title");
+    await db.sourceDao.createSource("some source title");
+
+    final c = await db.categoryDao.getAllCategories();
+    final s = await db.sourceDao.getAllSources();
+    final t = await db.transactionTypeDao.getAllTransactionTypes();
+
+    final catId = c.first.id;
+    final sourceId = s.first.id;
+    final tTypeId = t.first.id;
+
+    for (var j in List.generate(10, (i) => i + 1)) {
+      final date = DateTime.fromMicrosecondsSinceEpoch(1605869730572408)
+          .subtract(Duration(days: j))
+          .microsecondsSinceEpoch;
+      final amount = new Random().nextDouble() * 1000;
+      await db.transactionDao.createTransaction(
+          "transaction title - $j", amount, catId, sourceId, tTypeId,
+          transactoinTimestamp: date);
+    }
+
+    final result = db.transactionDao
+        .watchAndFilterTransactionsByTime(fromTimestamp: 1605524130577502);
+
+    result.listen(expectAsync1((trs) {
+      final expectedDates = trs.map(
+        (element) {
+          return DateFormat('yyyy-MM-dd').format(
+            DateTime.fromMicrosecondsSinceEpoch(
+                element.transactions.transactionTimestamp),
+          );
+        },
+      ).toList();
+      expect(expectedDates, [
+        "2020-11-19",
+        "2020-11-18",
+        "2020-11-17",
+      ]);
+    }, count: 1));
+  });
+
+  test("fetch transactions by timestamp with from and to date", () async {
+    await db.categoryDao.createCategory("some cat title");
+    await db.transactionTypeDao.createTransactionType("some ttype title");
+    await db.sourceDao.createSource("some source title");
+
+    final c = await db.categoryDao.getAllCategories();
+    final s = await db.sourceDao.getAllSources();
+    final t = await db.transactionTypeDao.getAllTransactionTypes();
+
+    final catId = c.first.id;
+    final sourceId = s.first.id;
+    final tTypeId = t.first.id;
+
+    for (var j in List.generate(10, (i) => i + 1)) {
+      final date = DateTime.fromMicrosecondsSinceEpoch(1605869730572408)
+          .subtract(Duration(days: j))
+          .microsecondsSinceEpoch;
+      final amount = new Random().nextDouble() * 1000;
+      await db.transactionDao.createTransaction(
+          "transaction title - $j", amount, catId, sourceId, tTypeId,
+          transactoinTimestamp: date);
+    }
+
+    final result = db.transactionDao.watchAndFilterTransactionsByTime(
+        fromTimestamp: 1605264930578871, toTimestamp: 1605696930576363);
+
+    result.listen(expectAsync1((trs) {
+      final expectedDates = trs.map(
+        (element) {
+          return DateFormat('yyyy-MM-dd').format(
+            DateTime.fromMicrosecondsSinceEpoch(
+                element.transactions.transactionTimestamp),
+          );
+        },
+      ).toList();
+      expect(expectedDates, [
+        "2020-11-18",
+        "2020-11-17",
+        "2020-11-16",
+        "2020-11-15",
+        "2020-11-14",
+      ]);
     }, count: 1));
   });
 }
