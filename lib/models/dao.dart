@@ -29,8 +29,10 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
     return select(transactions).get();
   }
 
-  JoinedSelectStatement<$TransactionsTable, NewTransaction> _joinTransaction() {
-    return (select(transactions)
+  JoinedSelectStatement<$TransactionsTable, NewTransaction> _joinTransaction(
+      {SimpleSelectStatement<$TransactionsTable, NewTransaction>
+          selectStatment}) {
+    return (selectStatment == null ? select(transactions) : selectStatment
           ..orderBy([
             (t) => OrderingTerm(
                 expression: t.transactionTimestamp, mode: OrderingMode.desc)
@@ -44,18 +46,6 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
   }
 
   Stream<List<TransactionData>> watchTransactions() {
-    // return (select(transactions)
-    //       ..orderBy([
-    //         (t) => OrderingTerm(
-    //             expression: t.transactionTimestamp, mode: OrderingMode.desc)
-    //       ]))
-    //     .join([
-    //       innerJoin(sources, sources.id.equalsExp(transactions.sourceId)),
-    //       innerJoin(
-    //           categories, categories.id.equalsExp(transactions.categoryId)),
-    //       innerJoin(transactionTypes,
-    //           transactionTypes.id.equalsExp(transactions.transactionTypeId)),
-    //     ])
     return _joinTransaction().watch().map(
           (rows) => rows.map((row) {
             return TransactionData(
@@ -67,7 +57,28 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
         );
   }
 
-  Future<void> updateTransaction(TransactionsCompanion transaction) {
+  Stream<List<TransactionData>> watchAndFilterTransactionsByTime(
+      {@required int fromTimestamp, int toTimestamp}) {
+    SimpleSelectStatement<$TransactionsTable, NewTransaction> selectStatement =
+        toTimestamp == null
+            ? (select(transactions)
+              ..where((tbl) =>
+                  tbl.transactionTimestamp.isBiggerOrEqualValue(fromTimestamp)))
+            : (select(transactions)
+              ..where((tbl) => tbl.transactionTimestamp
+                  .isBetweenValues(fromTimestamp, toTimestamp)));
+    return _joinTransaction(selectStatment: selectStatement).watch().map(
+          (rows) => rows.map((row) {
+            return TransactionData(
+                transactions: row.readTable(transactions),
+                categories: row.readTable(categories),
+                transactionTypes: row.readTable(transactionTypes),
+                sources: row.readTable(sources));
+          }).toList(),
+        );
+  }
+
+  Future<void> updateTransaction(NewTransaction transaction) {
     return update(transactions).replace(transaction);
   }
 
@@ -93,7 +104,7 @@ class CategoryDao extends DatabaseAccessor<SelavifyDB> with _$CategoryDaoMixin {
     return select(categories).watch();
   }
 
-  Future updateCategory(CategoriesCompanion category) {
+  Future updateCategory(Category category) {
     return update(categories).replace(category);
   }
 
@@ -119,7 +130,7 @@ class SourceDao extends DatabaseAccessor<SelavifyDB> with _$SourceDaoMixin {
     return select(sources).watch();
   }
 
-  Future updateSource(SourcesCompanion source) {
+  Future updateSource(Source source) {
     return update(sources).replace(source);
   }
 
@@ -147,7 +158,7 @@ class TransactionTypeDao extends DatabaseAccessor<SelavifyDB>
     return select(transactionTypes).watch();
   }
 
-  Future updateTransactionType(TransactionTypesCompanion tType) {
+  Future updateTransactionType(TransactionType tType) {
     return update(transactionTypes).replace(tType);
   }
 
