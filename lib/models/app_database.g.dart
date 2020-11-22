@@ -365,8 +365,11 @@ class $TransactionsTable extends Transactions
   GeneratedIntColumn get transactionTimestamp =>
       _transactionTimestamp ??= _constructTransactionTimestamp();
   GeneratedIntColumn _constructTransactionTimestamp() {
-    return GeneratedIntColumn('transaction_timestamp', $tableName, false,
-        defaultValue: currentDateAndTime.secondsSinceEpoch);
+    return GeneratedIntColumn(
+      'transaction_timestamp',
+      $tableName,
+      false,
+    )..clientDefault = () => DateTime.now().millisecondsSinceEpoch;
   }
 
   @override
@@ -634,8 +637,11 @@ class $CategoriesTable extends Categories
   GeneratedIntColumn get createdDate =>
       _createdDate ??= _constructCreatedDate();
   GeneratedIntColumn _constructCreatedDate() {
-    return GeneratedIntColumn('created_date', $tableName, false,
-        defaultValue: currentDateAndTime.secondsSinceEpoch);
+    return GeneratedIntColumn(
+      'created_date',
+      $tableName,
+      false,
+    )..clientDefault = () => DateTime.now().millisecondsSinceEpoch;
   }
 
   @override
@@ -865,8 +871,11 @@ class $SourcesTable extends Sources with TableInfo<$SourcesTable, Source> {
   GeneratedIntColumn get createdDate =>
       _createdDate ??= _constructCreatedDate();
   GeneratedIntColumn _constructCreatedDate() {
-    return GeneratedIntColumn('created_date', $tableName, false,
-        defaultValue: currentDateAndTime.secondsSinceEpoch);
+    return GeneratedIntColumn(
+      'created_date',
+      $tableName,
+      false,
+    )..clientDefault = () => DateTime.now().millisecondsSinceEpoch;
   }
 
   @override
@@ -1100,8 +1109,11 @@ class $TransactionTypesTable extends TransactionTypes
   GeneratedIntColumn get createdDate =>
       _createdDate ??= _constructCreatedDate();
   GeneratedIntColumn _constructCreatedDate() {
-    return GeneratedIntColumn('created_date', $tableName, false,
-        defaultValue: currentDateAndTime.secondsSinceEpoch);
+    return GeneratedIntColumn(
+      'created_date',
+      $tableName,
+      false,
+    )..clientDefault = () => DateTime.now().millisecondsSinceEpoch;
   }
 
   @override

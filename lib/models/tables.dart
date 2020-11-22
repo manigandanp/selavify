@@ -20,7 +20,7 @@ class Transactions extends Table {
       text().customConstraint("REFERENCES transaction_types(id)")();
 
   IntColumn get transactionTimestamp =>
-      integer().withDefault(currentDateAndTime.secondsSinceEpoch)();
+      integer().clientDefault(() => DateTime.now().millisecondsSinceEpoch)();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -31,7 +31,7 @@ class Categories extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get title => text().withLength(min: 1)();
   IntColumn get createdDate =>
-      integer().withDefault(currentDateAndTime.secondsSinceEpoch)();
+      integer().clientDefault(() => DateTime.now().millisecondsSinceEpoch)();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -41,7 +41,7 @@ class Sources extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get title => text().withLength(min: 1)();
   IntColumn get createdDate =>
-      integer().withDefault(currentDateAndTime.secondsSinceEpoch)();
+      integer().clientDefault(() => DateTime.now().millisecondsSinceEpoch)();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -51,7 +51,7 @@ class TransactionTypes extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get title => text().withLength(min: 1)();
   IntColumn get createdDate =>
-      integer().withDefault(currentDateAndTime.secondsSinceEpoch)();
+      integer().clientDefault(() => DateTime.now().millisecondsSinceEpoch)();
 
   @override
   Set<Column> get primaryKey => {id};
