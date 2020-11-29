@@ -9,13 +9,14 @@ class CustomBottmSheetWithFormField extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final String initalValue;
 
-  CustomBottmSheetWithFormField(
-      {@required this.context,
-      @required this.addNewItem,
-      @required this.child,
-      @required this.labelText,
-      @required this.scaffoldKey,
-      this.initalValue});
+  CustomBottmSheetWithFormField({
+    @required this.context,
+    @required this.addNewItem,
+    @required this.child,
+    @required this.labelText,
+    @required this.scaffoldKey,
+    this.initalValue,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -74,15 +75,15 @@ class CustomBottmSheetWithFormField extends StatelessWidget {
         child: Column(
           children: [
             FormBuilderTextField(
-              attribute: "title",
+              name: "title",
               decoration: InputDecoration(
                 labelText: labelText,
                 hintText: labelText,
               ),
               initialValue: initalValue,
-              validators: [
-                FormBuilderValidators.required(),
-              ],
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(context),
+              ]),
             ),
             SizedBox(
               height: 10,
