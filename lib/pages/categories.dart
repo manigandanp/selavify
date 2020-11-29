@@ -38,38 +38,6 @@ class CategoryList extends StatelessWidget {
                   createdTimestamp: category.createdDate,
                 ),
               );
-              // return Dismissible(
-              //   direction: DismissDirection.endToStart,
-              //   background: Container(
-              //     alignment: AlignmentDirectional.centerEnd,
-              //     color: Colors.amber,
-              //     child: Padding(
-              //       padding: const EdgeInsets.only(right: 10.0),
-              //       child: Icon(Icons.delete),
-              //     ),
-              //   ),
-              //   onDismissed: (DismissDirection direction) {
-              //     categoryDao.deleteCategory(category.id);
-              //   },
-              //   key: ValueKey(category.id),
-              //   child: Card(
-              //     elevation: 5,
-              //     child: ListTile(
-              //       leading: CircleAvatar(
-              //         child: Text(
-              //           category.title[0].toUpperCase(),
-              //           style: TextStyle(
-              //             fontSize: 16,
-              //             fontWeight: FontWeight.bold,
-              //           ),
-              //         ),
-              //       ),
-              //       title: Text(category.title.toUpperCase()),
-              //       trailing: _editBottomSheet(
-              //           listViewCtx, categoryDao, category, _scaffoldKey),
-              //     ),
-              //   ),
-              // );
             },
           );
         },
