@@ -12,16 +12,16 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
 
   Future<int> createTransaction(String title, double amount, String categoryId,
       String sourceId, String tTypeId,
-      {int transactoinTimestamp}) {
+      {int transactionTimestamp}) {
     return into(transactions).insert(TransactionsCompanion(
       title: Value(title),
       amount: Value(amount),
       categoryId: Value(categoryId),
       sourceId: Value(sourceId),
       transactionTypeId: Value(tTypeId),
-      transactionTimestamp: transactoinTimestamp == null
+      transactionTimestamp: transactionTimestamp == null
           ? Value.absent()
-          : Value(transactoinTimestamp),
+          : Value(transactionTimestamp),
     ));
   }
 

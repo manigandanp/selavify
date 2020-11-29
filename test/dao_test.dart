@@ -140,7 +140,7 @@ void main() {
 
       await db.transactionDao.createTransaction(
           "title", 202.0, catId, sourceId, tTypeId,
-          transactoinTimestamp: date.microsecondsSinceEpoch);
+          transactionTimestamp: date.microsecondsSinceEpoch);
 
       final allTransaction = await db.transactionDao.getTransactions();
 
@@ -247,11 +247,11 @@ void main() {
 
     await db.transactionDao.createTransaction(
         "first title", 102.0, catId, sourceId, tTypeId,
-        transactoinTimestamp: date2);
+        transactionTimestamp: date2);
 
     await db.transactionDao.createTransaction(
         "second title", 202.0, catId, sourceId, tTypeId,
-        transactoinTimestamp: date1);
+        transactionTimestamp: date1);
 
     final result = db.transactionDao.watchTransactions();
 
@@ -297,7 +297,7 @@ void main() {
       final amount = new Random().nextDouble() * 1000;
       await db.transactionDao.createTransaction(
           "transaction title - $j", amount, catId, sourceId, tTypeId,
-          transactoinTimestamp: date);
+          transactionTimestamp: date);
     }
 
     final result = db.transactionDao
@@ -340,7 +340,7 @@ void main() {
       final amount = new Random().nextDouble() * 1000;
       await db.transactionDao.createTransaction(
           "transaction title - $j", amount, catId, sourceId, tTypeId,
-          transactoinTimestamp: date);
+          transactionTimestamp: date);
     }
 
     final result = db.transactionDao.watchAndFilterTransactionsByTime(
