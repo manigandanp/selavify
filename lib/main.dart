@@ -6,13 +6,9 @@ import 'package:selavify/pages/categories.dart';
 import 'package:selavify/pages/sources.dart';
 import 'package:selavify/pages/transaction_type.dart';
 import 'package:selavify/pages/transactions.dart';
-// import 'package:selavify/pages/add_transaction.dart';
-// import 'package:selavify/pages/transaction_list.dart';
-// import 'package:selavify/services/db_service.dart';
+import 'package:selavify/pages/add_transaction.dart';
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await DBService.init();
   final db = SelavifyDB.withName("test_selavify.db");
   runApp(
     MultiProvider(
@@ -32,23 +28,22 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.deepOrange,
         inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(),
-            enabledBorder: OutlineInputBorder(),
-            focusedBorder: OutlineInputBorder()),
+          border: OutlineInputBorder(),
+          enabledBorder: OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(),
+        ),
       ),
       debugShowCheckedModeBanner: false,
-      home: CategoryList(),
+      home: TransactionsList(),
       initialRoute: '/',
       routes: {
         CategoryList.routeName: (context) => CategoryList(),
         SourceList.routeName: (context) => SourceList(),
         TransactionTypeList.routeName: (context) => TransactionTypeList(),
-        TransactionsList.routeName: (context) => TransactionsList()
-        // SourceList.routeName: (context) => SourceList(),
-        // TransactionList.routeName: (context) => TransactionList(),
-        // AddTransaction.routeName: (context) => AddTransaction(),
+        TransactionsList.routeName: (context) => TransactionsList(),
+        AddNewTransaction.routeName: (context) => AddNewTransaction(),
       },
     );
   }
