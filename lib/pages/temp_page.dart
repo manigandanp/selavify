@@ -1,46 +1,60 @@
-// import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:selavify/services/db_service.dart';
-
-// class TempPage extends StatefulWidget {
-//   static final routeName = "/tempPage";
-//   @override
-//   _TempPageState createState() => _TempPageState();
-// }
-
-// class _TempPageState extends State<TempPage> {
-//   Future<List<Map<String, dynamic>>> result;
-
-//   @override
-//   void initState() {
-//     result = DBService.queryTransactions();
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text("Temp Page")),
-//       body: FutureBuilder<List<Map<String, dynamic>>>(
-//         future: result,
-//         builder: (ctx, snapshot) {
-//           if (snapshot.hasError)
-//             return Center(
-//               child: Text(snapshot.error),
-//             );
-//           else if (snapshot.hasData) {
-//             print("hello");
-//             print(snapshot.data);
-//             return Center(
-//               child: Text(snapshot.data[0].toString()),
-//             );
-//           } else
-//             return Center(
-//               child: CircularProgressIndicator(),
-//             );
-//         },
-//       ),
-//     );
-//   }
-// }
+class TempPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Temp Page"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Slidable(
+          actionPane: SlidableDrawerActionPane(),
+          actionExtentRatio: 0.50,
+          child: Container(
+            color: Colors.white,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.indigoAccent,
+                child: Text('some text'),
+                foregroundColor: Colors.white,
+              ),
+              title: Text('Tile'),
+              subtitle: Text('SlidableDrawerDelegate'),
+            ),
+          ),
+          actions: <Widget>[
+            IconSlideAction(
+              caption: 'Archive',
+              color: Colors.blue,
+              icon: Icons.archive,
+              onTap: () => print('Archive'),
+            ),
+            // IconSlideAction(
+            //   caption: 'Share',
+            //   color: Colors.indigo,
+            //   icon: Icons.share,
+            //   onTap: () => print('Share'),
+            // ),
+          ],
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              caption: 'More',
+              color: Colors.black45,
+              icon: Icons.more_horiz,
+              onTap: () => print('More'),
+            ),
+            // IconSlideAction(
+            //   caption: 'Delete',
+            //   color: Colors.red,
+            //   icon: Icons.delete,
+            //   onTap: () => print('Delete'),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+}
