@@ -4,10 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:selavify/models/app_database.dart';
 import 'package:selavify/models/dao.dart';
+import 'package:selavify/utils/transactions_helper.dart';
 
 class AddNewTransaction extends StatelessWidget {
   final String title;
-  final NewTransaction oldTransaction;
+  final TransactionEntry oldTransaction;
 
   AddNewTransaction({
     this.title,
@@ -148,27 +149,13 @@ class AddNewTransaction extends StatelessWidget {
       BuildContext context, TransactionDao transactionDao, bool isEditPage) {
     GlobalKey<FormBuilderState> fbKey = _fbKey;
     if (fbKey.currentState.saveAndValidate()) {
-      Map<String, dynamic> value = fbKey.currentState.value;
-      if (isEditPage) {
-        transactionDao.updateTransaction(
-          oldTransaction.copyWith(
-              title: value['transactionTitle'],
-              amount: value['amount'],
-              categoryId: value["category"],
-              sourceId: value["source"],
-              transactionTypeId: value["transaction_type"],
-              transactionTimestamp: value["transactionTimestamp"]),
-        );
-      } else {
-        transactionDao.createTransaction(
-          value['transactionTitle'],
-          value['amount'],
-          value["category"],
-          value["source"],
-          value["transaction_type"],
-          transactionTimestamp: value["transactionTimestamp"],
-        );
-      }
+      var helper = TransactionsHelper(transactionDao);
+      Map<String, dynamic> json = fbKey.currentState.value;
+      if (isEditPage)
+        helper.updateTransaction(oldTransaction, json);
+      else
+        helper.createTransaction(json);
+
       print(fbKey.currentState.value);
       Navigator.pop(context);
     } else

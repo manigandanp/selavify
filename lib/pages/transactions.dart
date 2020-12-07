@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:selavify/models/dao.dart';
-import 'package:selavify/models/tables.dart';
+import 'package:selavify/models/models.dart';
 import 'package:selavify/widgets/drawer_menu.dart';
 import 'package:selavify/widgets/icon_widgets.dart';
 import 'package:selavify/pages/add_transaction.dart';
@@ -21,9 +21,11 @@ class TransactionsList extends StatelessWidget {
       appBar: AppBar(
         title: Text("Transactions"),
       ),
-      body: StreamBuilder<List<TransactionData>>(
+      body: StreamBuilder<List<TransactionWithCategorySourceAndTType>>(
         stream: transactionDao.watchTransactions(),
-        builder: (context, AsyncSnapshot<List<TransactionData>> snapshot) {
+        builder: (context,
+            AsyncSnapshot<List<TransactionWithCategorySourceAndTType>>
+                snapshot) {
           final items = snapshot.data ?? List();
           return ListView.builder(
             itemCount: items.length,
@@ -50,8 +52,8 @@ class TransactionsList extends StatelessWidget {
     );
   }
 
-  Widget _listItem(TransactionData item, BuildContext context,
-      TransactionDao transactionDao) {
+  Widget _listItem(TransactionWithCategorySourceAndTType item,
+      BuildContext context, TransactionDao transactionDao) {
     final isIncome = item.transactionTypes.title.toLowerCase() == "income";
     final color = isIncome ? Colors.green : Colors.red;
 

@@ -1,6 +1,6 @@
 import 'package:moor/moor.dart';
 import 'package:selavify/models/app_database.dart';
-import 'package:selavify/models/tables.dart';
+import 'package:selavify/models/models.dart';
 
 part 'dao.g.dart';
 
@@ -25,12 +25,12 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
     ));
   }
 
-  Future<List<NewTransaction>> getTransactions() {
+  Future<List<TransactionEntry>> getTransactions() {
     return select(transactions).get();
   }
 
-  JoinedSelectStatement<$TransactionsTable, NewTransaction> _joinTransaction(
-      {SimpleSelectStatement<$TransactionsTable, NewTransaction>
+  JoinedSelectStatement<$TransactionsTable, TransactionEntry> _joinTransaction(
+      {SimpleSelectStatement<$TransactionsTable, TransactionEntry>
           selectStatment}) {
     return (selectStatment == null ? select(transactions) : selectStatment
           ..orderBy([
@@ -45,10 +45,10 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
     ]);
   }
 
-  Stream<List<TransactionData>> watchTransactions() {
+  Stream<List<TransactionWithCategorySourceAndTType>> watchTransactions() {
     return _joinTransaction().watch().map(
           (rows) => rows.map((row) {
-            return TransactionData(
+            return TransactionWithCategorySourceAndTType(
                 transactions: row.readTable(transactions),
                 categories: row.readTable(categories),
                 transactionTypes: row.readTable(transactionTypes),
@@ -57,9 +57,9 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
         );
   }
 
-  Stream<List<TransactionData>> watchAndFilterTransactionsByTime(
+  Stream<List<TransactionWithCategorySourceAndTType>> watchAndFilterTransactionsByTime(
       {@required int fromTimestamp, int toTimestamp}) {
-    SimpleSelectStatement<$TransactionsTable, NewTransaction> selectStatement =
+    SimpleSelectStatement<$TransactionsTable, TransactionEntry> selectStatement =
         toTimestamp == null
             ? (select(transactions)
               ..where((tbl) =>
@@ -69,7 +69,7 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
                   .isBetweenValues(fromTimestamp, toTimestamp)));
     return _joinTransaction(selectStatment: selectStatement).watch().map(
           (rows) => rows.map((row) {
-            return TransactionData(
+            return TransactionWithCategorySourceAndTType(
                 transactions: row.readTable(transactions),
                 categories: row.readTable(categories),
                 transactionTypes: row.readTable(transactionTypes),
@@ -78,7 +78,7 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
         );
   }
 
-  Future<void> updateTransaction(NewTransaction transaction) {
+  Future<void> updateTransaction(TransactionEntry transaction) {
     return update(transactions).replace(transaction);
   }
 

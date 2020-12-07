@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 final _uuid = Uuid();
 
-@DataClassName('NewTransaction')
+@DataClassName('TransactionEntry')
 class Transactions extends Table {
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get title => text().withLength(min: 1)();
@@ -57,13 +57,13 @@ class TransactionTypes extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-class TransactionData {
-  final NewTransaction transactions; // this is dataclass not tables
+class TransactionWithCategorySourceAndTType {
+  final TransactionEntry transactions; // this is dataclass not tables
   final Category categories;
   final Source sources;
   final TransactionType transactionTypes;
 
-  TransactionData({
+  TransactionWithCategorySourceAndTType({
     @required this.transactions,
     @required this.sources,
     @required this.categories,

@@ -175,7 +175,7 @@ void main() {
       expect(allTransaction.length, 1);
       expect(allTransaction.first.title, "transaction title");
 
-      NewTransaction trans = allTransaction.first.copyWith(
+      TransactionEntry trans = allTransaction.first.copyWith(
           title: "updated transaction title",
           amount: 290012,
           categoryId: secondCatId);

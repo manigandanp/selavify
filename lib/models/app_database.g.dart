@@ -7,7 +7,8 @@ part of 'app_database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
-class NewTransaction extends DataClass implements Insertable<NewTransaction> {
+class TransactionEntry extends DataClass
+    implements Insertable<TransactionEntry> {
   final String id;
   final String title;
   final double amount;
@@ -15,7 +16,7 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
   final String sourceId;
   final String transactionTypeId;
   final int transactionTimestamp;
-  NewTransaction(
+  TransactionEntry(
       {@required this.id,
       @required this.title,
       @required this.amount,
@@ -23,14 +24,14 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
       @required this.sourceId,
       @required this.transactionTypeId,
       @required this.transactionTimestamp});
-  factory NewTransaction.fromData(
+  factory TransactionEntry.fromData(
       Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     final doubleType = db.typeSystem.forDartType<double>();
     final intType = db.typeSystem.forDartType<int>();
-    return NewTransaction(
+    return TransactionEntry(
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       title:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
@@ -95,10 +96,10 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
     );
   }
 
-  factory NewTransaction.fromJson(Map<String, dynamic> json,
+  factory TransactionEntry.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return NewTransaction(
+    return TransactionEntry(
       id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<double>(json['amount']),
@@ -123,7 +124,7 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
     };
   }
 
-  NewTransaction copyWith(
+  TransactionEntry copyWith(
           {String id,
           String title,
           double amount,
@@ -131,7 +132,7 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
           String sourceId,
           String transactionTypeId,
           int transactionTimestamp}) =>
-      NewTransaction(
+      TransactionEntry(
         id: id ?? this.id,
         title: title ?? this.title,
         amount: amount ?? this.amount,
@@ -142,7 +143,7 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
       );
   @override
   String toString() {
-    return (StringBuffer('NewTransaction(')
+    return (StringBuffer('TransactionEntry(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('amount: $amount, ')
@@ -170,7 +171,7 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is NewTransaction &&
+      (other is TransactionEntry &&
           other.id == this.id &&
           other.title == this.title &&
           other.amount == this.amount &&
@@ -180,7 +181,7 @@ class NewTransaction extends DataClass implements Insertable<NewTransaction> {
           other.transactionTimestamp == this.transactionTimestamp);
 }
 
-class TransactionsCompanion extends UpdateCompanion<NewTransaction> {
+class TransactionsCompanion extends UpdateCompanion<TransactionEntry> {
   final Value<String> id;
   final Value<String> title;
   final Value<double> amount;
@@ -210,7 +211,7 @@ class TransactionsCompanion extends UpdateCompanion<NewTransaction> {
         categoryId = Value(categoryId),
         sourceId = Value(sourceId),
         transactionTypeId = Value(transactionTypeId);
-  static Insertable<NewTransaction> custom({
+  static Insertable<TransactionEntry> custom({
     Expression<String> id,
     Expression<String> title,
     Expression<double> amount,
@@ -293,7 +294,7 @@ class TransactionsCompanion extends UpdateCompanion<NewTransaction> {
 }
 
 class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, NewTransaction> {
+    with TableInfo<$TransactionsTable, TransactionEntry> {
   final GeneratedDatabase _db;
   final String _alias;
   $TransactionsTable(this._db, [this._alias]);
@@ -389,7 +390,7 @@ class $TransactionsTable extends Transactions
   @override
   final String actualTableName = 'transactions';
   @override
-  VerificationContext validateIntegrity(Insertable<NewTransaction> instance,
+  VerificationContext validateIntegrity(Insertable<TransactionEntry> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -442,9 +443,9 @@ class $TransactionsTable extends Transactions
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  NewTransaction map(Map<String, dynamic> data, {String tablePrefix}) {
+  TransactionEntry map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return NewTransaction.fromData(data, _db, prefix: effectivePrefix);
+    return TransactionEntry.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
