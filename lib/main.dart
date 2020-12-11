@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:selavify/models/app_database.dart';
 import 'package:selavify/models/dao.dart';
 import 'package:selavify/pages/categories.dart';
+import 'package:selavify/pages/dashboard_page.dart';
 import 'package:selavify/pages/sources.dart';
 import 'package:selavify/pages/transaction_type.dart';
 import 'package:selavify/pages/transactions.dart';
@@ -36,7 +37,7 @@ class HomePage extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: TransactionsList(),
+      home: Dashboard(),
       initialRoute: '/',
       routes: {
         CategoryList.routeName: (context) => CategoryList(),
@@ -44,6 +45,7 @@ class HomePage extends StatelessWidget {
         TransactionTypeList.routeName: (context) => TransactionTypeList(),
         TransactionsList.routeName: (context) => TransactionsList(),
         AddNewTransaction.routeName: (context) => AddNewTransaction(),
+        Dashboard.routeName: (context) => Dashboard(),
       },
     );
   }

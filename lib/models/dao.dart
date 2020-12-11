@@ -1,6 +1,7 @@
 import 'package:moor/moor.dart';
 import 'package:selavify/models/app_database.dart';
 import 'package:selavify/models/models.dart';
+import 'package:selavify/utils/consts.dart';
 
 part 'dao.g.dart';
 
@@ -57,10 +58,12 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
         );
   }
 
-  Stream<List<TransactionWithCategorySourceAndTType>> watchAndFilterTransactionsByTime(
-      {@required int fromTimestamp, int toTimestamp}) {
-    SimpleSelectStatement<$TransactionsTable, TransactionEntry> selectStatement =
-        toTimestamp == null
+  
+  Stream<List<TransactionWithCategorySourceAndTType>>
+      watchAndFilterTransactionsByTime(
+          {@required int fromTimestamp, int toTimestamp}) {
+    SimpleSelectStatement<$TransactionsTable, TransactionEntry>
+        selectStatement = toTimestamp == null
             ? (select(transactions)
               ..where((tbl) =>
                   tbl.transactionTimestamp.isBiggerOrEqualValue(fromTimestamp)))

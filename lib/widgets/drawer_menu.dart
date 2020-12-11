@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:selavify/pages/categories.dart';
+import 'package:selavify/pages/dashboard_page.dart';
 import 'package:selavify/pages/sources.dart';
 import 'package:selavify/pages/transaction_type.dart';
 import 'package:selavify/pages/transactions.dart';
@@ -11,8 +12,9 @@ class DrawerMenu extends StatelessWidget {
       child: ListView(
         children: [
           ListTile(
-            onTap: () {},
-            title: _styledText("Home"),
+            onTap: () =>
+                Navigator.of(context).pushReplacementNamed(Dashboard.routeName),
+            title: _styledText("Dashboard"),
             leading: _styledIcon(context, Icons.home_outlined),
           ),
           Divider(),

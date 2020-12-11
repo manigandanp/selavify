@@ -38,6 +38,9 @@ class Categories extends Table {
 }
 
 class Sources extends Table {
+  static const ACCOUNT = "Account";
+  static const CASH = "Cash";
+
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get title => text().withLength(min: 1)();
   IntColumn get createdDate =>
@@ -48,6 +51,11 @@ class Sources extends Table {
 }
 
 class TransactionTypes extends Table {
+  static const EXPANSE = "Expanse";
+  static const INCOME = "Income";
+  static const INVESTMENT = "Investment";
+  static const WITHDRAWL = "Withdrawl";
+
   TextColumn get id => text().clientDefault(() => _uuid.v4())();
   TextColumn get title => text().withLength(min: 1)();
   IntColumn get createdDate =>
