@@ -4,6 +4,9 @@ import 'package:selavify/models/dao.dart';
 import 'package:selavify/models/summary_model.dart';
 import 'package:selavify/services/dashboard_service.dart';
 import 'package:selavify/widgets/drawer_menu.dart';
+import 'package:selavify/widgets/icon_widgets.dart';
+
+import 'add_transaction.dart';
 
 class Dashboard extends StatelessWidget {
   static final routeName = "/dashboard";
@@ -21,62 +24,72 @@ class Dashboard extends StatelessWidget {
             final Summary summary = snapshot.data[0] ?? {};
 
             if (snapshot.data != null)
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Card(
-                          child: ListTile(
-                            title: Text("Income"),
-                            subtitle: Text(
-                                'Cash: ${summary.income.cash} | Account: ${summary.income.account}'),
-                            trailing: Text(summary.income.total.toString()),
-                          ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            title: Text("Expanse"),
-                            subtitle: Text(
-                                'Cash: ${summary.expanse.cash} | Account: ${summary.expanse.account}'),
-                            trailing: Text(summary.expanse.total.toString()),
-                          ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            title: Text("Investment"),
-                            subtitle: Text(
-                                'Cash: ${summary.investment.cash} | Account: ${summary.investment.account}'),
-                            trailing: Text(summary.investment.total.toString()),
-                          ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            title: Text("Withdrawl"),
-                            trailing: Text(summary.withdrawl.toString()),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Card(
-                      child: ListTile(
-                        title: Text("Balance"),
-                        subtitle: Text(
-                            'Cash: ${summary.balance.cash} | Account: ${summary.balance.account}'),
-                        trailing: Text(summary.balance.total.toString()),
-                      ),
-                    )
-                  ],
-                ),
-              );
+              return SummaryList(summary: summary);
             else
               return Center(
                 child: CircularProgressIndicator(),
               );
           }),
       drawer: DrawerMenu(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  AddNewTransaction(title: "Add New Transaction"),
+            ),
+          );
+        },
+        child: AddNewItem(),
+      ),
+    );
+  }
+}
+
+class SummaryList extends StatelessWidget {
+  const SummaryList({
+    Key key,
+    @required this.summary,
+  }) : super(key: key);
+
+  final Summary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              buildSummaryCard("Income", summary.income),
+              buildSummaryCard("Expanse", summary.expanse),
+              buildSummaryCard("Investment", summary.investment),
+              Card(
+                child: ListTile(
+                  title: Text("Withdrawl"),
+                  trailing: Text(summary.withdrawl.toString()),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            child: buildSummaryCard("Balance", summary.balance),
+            margin: EdgeInsets.only(top: 50),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Card buildSummaryCard(String title, SummaryObj obj) {
+    return Card(
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text('Cash: ${obj.cash} | Account: ${obj.account}'),
+        trailing: Text(obj.total.toString()),
+      ),
     );
   }
 }
