@@ -21,11 +21,10 @@ class Dashboard extends StatelessWidget {
       body: StreamBuilder<List<Summary>>(
           stream: service.watchSummary(),
           builder: (context, AsyncSnapshot<List<Summary>> snapshot) {
-            final Summary summary = snapshot.data[0] ?? {};
-
-            if (snapshot.data != null)
+            if (snapshot.data != null) {
+              final Summary summary = snapshot.data[0];
               return SummaryList(summary: summary);
-            else
+            } else
               return Center(
                 child: CircularProgressIndicator(),
               );
