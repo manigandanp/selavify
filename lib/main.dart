@@ -2,12 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selavify/models/app_database.dart';
 import 'package:selavify/models/dao.dart';
-import 'package:selavify/pages/categories.dart';
 import 'package:selavify/pages/dashboard_page.dart';
-import 'package:selavify/pages/sources.dart';
-import 'package:selavify/pages/transaction_type.dart';
-import 'package:selavify/pages/transactions.dart';
-import 'package:selavify/pages/add_transaction.dart';
+import 'package:selavify/routes.dart';
 
 void main() async {
   final db = SelavifyDB.withName("test_selavify.db");
@@ -39,14 +35,7 @@ class HomePage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Dashboard(),
       initialRoute: '/',
-      routes: {
-        CategoryList.routeName: (context) => CategoryList(),
-        SourceList.routeName: (context) => SourceList(),
-        TransactionTypeList.routeName: (context) => TransactionTypeList(),
-        TransactionsList.routeName: (context) => TransactionsList(),
-        AddNewTransaction.routeName: (context) => AddNewTransaction(),
-        Dashboard.routeName: (context) => Dashboard(),
-      },
+      routes: routes,
     );
   }
 }

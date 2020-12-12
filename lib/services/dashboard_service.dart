@@ -1,7 +1,7 @@
 import 'package:selavify/models/dao.dart';
 import 'package:selavify/models/models.dart';
 import 'package:selavify/models/summary_model.dart';
-import 'package:selavify/services/transactions_summary.dart';
+import 'package:selavify/extensions/transactions_extension.dart';
 
 class DashboardService {
   final TransactionDao dao;

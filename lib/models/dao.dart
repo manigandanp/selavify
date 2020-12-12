@@ -1,7 +1,6 @@
 import 'package:moor/moor.dart';
 import 'package:selavify/models/app_database.dart';
 import 'package:selavify/models/models.dart';
-import 'package:selavify/utils/consts.dart';
 
 part 'dao.g.dart';
 
