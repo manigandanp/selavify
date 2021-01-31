@@ -7,12 +7,22 @@ import 'package:selavify/pages/transaction_type.dart';
 import 'package:selavify/pages/transactions.dart';
 import 'package:selavify/services/google_drive_service.dart';
 
-class DrawerMenu extends StatelessWidget {
+class DrawerMenu extends StatefulWidget {
+  @override
+  _DrawerMenuState createState() => _DrawerMenuState();
+}
+
+class _DrawerMenuState extends State<DrawerMenu> {
   Map<String, dynamic> initialValue = {
     "name": "Guest",
-    "imageUrl": "",
+    "imageUrl": "https://via.placeholder.com/50x50",
     "email": "",
   };
+  bool isSignedIn = false;
+  @override
+  void initState() {
+    gSignIn.isSignedIn.then((value) => isSignedIn = value);
+  }
 
   GoogleDriveFacade gSignIn = GoogleDriveFacade();
 
@@ -21,24 +31,33 @@ class DrawerMenu extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          FutureBuilder(
-            builder: (context, snapshot) {
-              if (snapshot.hasData == null || snapshot.error != null) {
-                return buildAccountDetailsHeader(
-                    details: initialValue,
-                    isSigendIn: false,
-                    signInHandler: gSignIn.signIn);
-              } else {
-                return buildAccountDetailsHeader(
-                  details: snapshot.data,
-                  isSigendIn: true,
-                  signInHandler: gSignIn.signOut,
-                );
-              }
-            },
-            future: gSignIn.accountDetails(),
-            initialData: initialValue,
-          ),
+          if (isSignedIn)
+            buildAccountDetailsHeader(
+              details: initialValue,
+              isSigendIn: false,
+              signInHandler: gSignIn.signIn,
+            )
+          else
+            FutureBuilder(
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return buildAccountDetailsHeader(
+                    details: snapshot.data,
+                    isSigendIn: true,
+                    signInHandler: gSignIn.signOut,
+                  );
+                } else {
+                  return Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  );
+                }
+              },
+              future: gSignIn.accountDetails(),
+              // initialData: initialValue,
+            ),
           ListTile(
             onTap: () =>
                 Navigator.of(context).pushReplacementNamed(Dashboard.routeName),
@@ -96,12 +115,7 @@ class DrawerMenu extends StatelessWidget {
                   width: 50,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(25.0),
-                    child: CachedNetworkImage(
-                      imageUrl: details["imageUrl"],
-                      placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ),
+                    child: Image.network(details["imageUrl"]),
                   ),
                 ),
                 Padding(padding: EdgeInsets.symmetric(vertical: 5)),

@@ -82,4 +82,5 @@ class GoogleDriveFacade {
 
   Future<void> signOut() async => await gSignInHelper.signOut();
   Future<void> signIn() async => await gSignInHelper.signIn();
+  Future<bool> get isSignedIn async => await gSignInHelper.isSignedIn;
 }
