@@ -25,9 +25,9 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
     ));
   }
 
-  Future<List<TransactionEntry>> getTransactions() {
-    return select(transactions).get();
-  }
+  // Future<List<TransactionEntry>> getTransactions() {
+  //   return select(transactions).get();
+  // }
 
   JoinedSelectStatement<$TransactionsTable, TransactionEntry> _joinTransaction(
       {SimpleSelectStatement<$TransactionsTable, TransactionEntry>
@@ -57,7 +57,17 @@ class TransactionDao extends DatabaseAccessor<SelavifyDB>
         );
   }
 
-  
+  Future<List<TransactionWithCategorySourceAndTType>> getTransactions() async {
+    List<TypedResult> typedList = await _joinTransaction().get();
+    return typedList
+        .map((row) => TransactionWithCategorySourceAndTType(
+            transactions: row.readTable(transactions),
+            categories: row.readTable(categories),
+            transactionTypes: row.readTable(transactionTypes),
+            sources: row.readTable(sources)))
+        .toList();
+  }
+
   Stream<List<TransactionWithCategorySourceAndTType>>
       watchAndFilterTransactionsByTime(
           {@required int fromTimestamp, int toTimestamp}) {

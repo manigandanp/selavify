@@ -1,14 +1,48 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selavify/models/dao.dart';
 import 'package:selavify/models/summary_model.dart';
 import 'package:selavify/services/dashboard_service.dart';
+import 'package:selavify/services/google_drive_service.dart';
+import 'package:selavify/utils/file_helper.dart';
+import 'package:selavify/utils/utils.dart';
 import 'package:selavify/widgets/drawer_menu.dart';
 import 'package:selavify/widgets/icon_widgets.dart';
 
 import 'add_transaction.dart';
 
 class Dashboard extends StatelessWidget {
+  void backupToDrive(DashboardService service, context) async {
+    final folderName = "backup";
+    final dateStr = Utils.getCurrentDateAsString();
+    final fileName = "transactions_$dateStr.csv";
+    final fileHelper = FileUtils(folderName, fileName);
+    var transactions = await service.getTransactionsAsCsv(withHeader: true);
+    var content = transactions.join("\n");
+    File f = await fileHelper.writeContent(content);
+    await GoogleDriveFacade().uploadFile(f, fileName);
+    await fileHelper.deleteFile(f);
+    print("file uploaded sucessfully");
+    // await GoogleDriveFacade().signOut();
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: true,
+    //   builder: (BuildContext context) {
+    //     return Dialog(
+    //       child: new Row(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           new CircularProgressIndicator(),
+    //           new Text("Loading"),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
+  }
+
   static final routeName = "/dashboard";
   @override
   Widget build(BuildContext context) {
@@ -17,6 +51,14 @@ class Dashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Dashboard"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.sync,
+            ),
+            onPressed: () => backupToDrive(service, context),
+          ),
+        ],
       ),
       body: StreamBuilder<List<Summary>>(
           stream: service.watchSummary(),

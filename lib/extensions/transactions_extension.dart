@@ -1,4 +1,5 @@
 import 'package:selavify/models/models.dart';
+import 'package:selavify/utils/utils.dart';
 
 extension TransactoinsSummary on List<TransactionWithCategorySourceAndTType> {
   double get _sumAllTransactions =>
@@ -76,6 +77,26 @@ extension TransactoinsSummary on List<TransactionWithCategorySourceAndTType> {
       "account": rows._sumAccountTransactions,
     };
   }
+
+  List<String> toCsv({withHeader = false}) {
+    List<String> lst = this.map((tr) => this._formatStr(tr)).toList();
+    var header = this._trimStr("""transactions.title,
+        transactions.amount,
+        transactions.transactionTimestamp,
+        categories.title,
+        transactionTypes.title,
+        sources.title"""
+        .replaceAll("\n|\s+", ""));
+
+    return withHeader ? [header, ...lst] : lst;
+  }
+
+  String _formatStr(TransactionWithCategorySourceAndTType tr) =>
+      this._trimStr("""\"${tr.transactions.title}\", ${tr.transactions.amount}, 
+      ${Utils.timesampToDate(tr.transactions.transactionTimestamp)}, 
+      ${tr.categories.title}, ${tr.transactionTypes.title}, ${tr.sources.title}""");
+
+  String _trimStr(str) => str.replaceAll(new RegExp(r"\n|\s\s+"), "");
 }
 
 // income = (cash + withdrawl)  + (account - withdarawl)

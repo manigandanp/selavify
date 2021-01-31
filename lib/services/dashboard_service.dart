@@ -15,4 +15,10 @@ class DashboardService {
     return tr.map((rows) => [Summary.fromJson(rows.summary)]);
     // return tr.map((rows) => Summary.fromJson(rows.summary));
   }
+
+  Future<List<String>> getTransactionsAsCsv({withHeader = false}) async {
+    List<TransactionWithCategorySourceAndTType> tr =
+        await dao.getTransactions();
+    return tr.toCsv(withHeader: withHeader);
+  }
 }
