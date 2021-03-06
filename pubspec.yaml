@@ -38,6 +38,7 @@ dependencies:
   googleapis: any
   google_sign_in: any
   cached_network_image: ^2.5.0
+  dartz: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
