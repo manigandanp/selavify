@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:selavify/auth/auth.dart';
 import 'package:selavify/common/failure.dart';
-import 'package:selavify/entities/user_entity.dart';
+
+import 'entities/user_entity.dart';
 
 class GoogleAuth implements OAuth {
-
   @override
   Future<Either<Failure, User>> getUserDetails() {
     //if signed in
@@ -19,7 +19,7 @@ class GoogleAuth implements OAuth {
   }
 
   @override
-  Future<Either<Failure, bool>> signIn() {
+  Future<Either<Failure, User>> signIn() {
     // sign in to the account
     // store the user data to local db
     // send failure message if already signed in
