@@ -17,7 +17,8 @@ main() {
   });
 
   test("should retrun current user object", () async {
-    final userObj = User("userName", "email", "avatarUrl");
+    final userObj =
+        User(userName: "userName", email: "email", avatarUrl: "avatarUrl");
     when(auth.getUserDetails()).thenAnswer((_) async => Right(userObj));
 
     final result = await usecase(NoParams());

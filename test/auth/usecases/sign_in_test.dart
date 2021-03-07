@@ -18,7 +18,8 @@ void main() {
   });
 
   test("should log into the account", () async {
-    final userObj = User("userName", "email", "avatarUrl");
+    final userObj =
+        User(userName: "userName", email: "email", avatarUrl: "avatarUrl");
     when(auth.signIn()).thenAnswer((_) async => Right(userObj));
     final result = await usecase(NoParams());
     expect(result, Right(userObj));
