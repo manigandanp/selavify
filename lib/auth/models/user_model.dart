@@ -25,9 +25,4 @@ class UserModel extends User {
       'avatarUrl': avatarUrl,
     };
   }
-
-  // @override
-  // String toString() {
-  //   return json.encode(toJson());
-  // }
 }
