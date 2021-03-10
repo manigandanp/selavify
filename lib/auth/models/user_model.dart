@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:selavify/auth/consts.dart';
 import 'package:selavify/auth/entities/user_entity.dart';
 
 class UserModel extends User {
@@ -12,9 +13,9 @@ class UserModel extends User {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      userName: json['userName'],
-      email: json['email'],
-      avatarUrl: json['avatarUrl'],
+      userName: json[USER_NAME],
+      email: json[EMAIL],
+      avatarUrl: json[AVATAR_URL],
     );
   }
 
