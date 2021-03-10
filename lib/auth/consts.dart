@@ -1,8 +1,6 @@
-import 'package:selavify/auth/models/user_model.dart';
-
-const USER_NAME = "username";
+const USER_NAME = "userName";
 const EMAIL = "email";
-const AVATAR_URL = "avatar_link";
+const AVATAR_URL = "avatarUrl";
 
 const GUESTUSER = {
   "userName": "Guest",

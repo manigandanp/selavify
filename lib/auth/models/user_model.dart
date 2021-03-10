@@ -26,4 +26,6 @@ class UserModel extends User {
       'avatarUrl': avatarUrl,
     };
   }
+
+  bool get isGusetUser => userName == GUESTUSER[USER_NAME];
 }
