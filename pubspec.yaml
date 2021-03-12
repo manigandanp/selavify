@@ -15,6 +15,7 @@ dependencies:
   dartz: any
   equatable: ^2.0.0
   shared_preferences: ^2.0.3
+  connectivity: ^3.0.2
 
   cupertino_icons: ^1.0.0
 
