@@ -1,11 +1,16 @@
 import 'package:selavify/auth/models/user_model.dart';
+import 'package:selavify/common/network_info.dart';
 
 abstract class RemoteAuthData {
   Future<UserModel> signIn();
   Future<void> signOut();
 }
 
-class RemoteAuthDateImpl implements RemoteAuthData {
+class GoogleAuth implements RemoteAuthData {
+  final NetworkInfo _networkInfo;
+  
+  GoogleAuth(this._networkInfo);
+
   @override
   Future<UserModel> signIn() {
     // TODO: implement signIn
