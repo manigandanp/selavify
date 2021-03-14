@@ -16,7 +16,9 @@ class RemoteAuthFailure extends Failure {
 }
 
 class NetworkFailure extends Failure {
-  NetworkFailure(String message) : super(message);
+  final String message =
+      "No Internet connection. Please check your connection and try again";
+  NetworkFailure({message}) : super(message);
 }
 
 class UserModelConversionFailure extends Failure {

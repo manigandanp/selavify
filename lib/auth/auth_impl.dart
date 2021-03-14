@@ -27,26 +27,34 @@ class OAuthImpl implements OAuth {
 
   @override
   Future<Either<Failure, User>> signIn() async {
-    try {
-      UserModel user = await googleAuth.signIn();
-      await localAuthData.saveUserDetails(user);
-      return Right(user);
-    } on UserModelConversionException {
-      final String className = this.runtimeType.toString();
-      return Left(UserModelConversionFailure(className: className));
-    } catch (ex) {
-      return Left(RemoteAuthFailure(ex.toString()));
+    if (await networkInfo.isConnected()) {
+      try {
+        UserModel user = await googleAuth.signIn();
+        await localAuthData.saveUserDetails(user);
+        return Right(user);
+      } on UserModelConversionException {
+        final String className = this.runtimeType.toString();
+        return Left(UserModelConversionFailure(className: className));
+      } catch (ex) {
+        return Left(RemoteAuthFailure(ex.toString()));
+      }
+    } else {
+      return Left(NetworkFailure());
     }
   }
 
   @override
   Future<Either<Failure, bool>> signOut() async {
-    try {
-      await googleAuth.signOut();
-      await localAuthData.deleteUserDetails();
-      return Right(true);
-    } catch (ex) {
-      return Left(RemoteAuthFailure(ex.toString()));
+    if (await networkInfo.isConnected()) {
+      try {
+        await googleAuth.signOut();
+        await localAuthData.deleteUserDetails();
+        return Right(true);
+      } catch (ex) {
+        return Left(RemoteAuthFailure(ex.toString()));
+      }
+    } else {
+      return Left(NetworkFailure());
     }
   }
 }

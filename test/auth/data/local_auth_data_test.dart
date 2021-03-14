@@ -29,7 +29,9 @@ main() {
     expect(signedIn, tUserModel);
   });
 
-  test("should return guest usermodel from local data store", () async {
+  test(
+      "should return guest usermodel from local data store if no user stored already",
+      () async {
     mockPrefs = MockPrefrences();
     localAuthData = LocalAuthDataImpl(mockPrefs);
 
