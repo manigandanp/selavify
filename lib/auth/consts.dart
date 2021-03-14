@@ -7,3 +7,8 @@ const GUESTUSER = {
   "email": "no email",
   "avatarUrl": "local_file_images"
 };
+
+const GOOGLE_AUTH_SCOPES = [
+  // DriveApi.DriveScope,
+  // SheetsApi.SpreadsheetsScope
+];
