@@ -1,0 +1,1 @@
+class UserModelConversionException implements Exception {}
