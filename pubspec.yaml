@@ -16,6 +16,7 @@ dependencies:
   equatable: ^2.0.0
   shared_preferences: ^2.0.3
   connectivity: ^3.0.2
+  google_sign_in: ^5.0.0
 
   cupertino_icons: ^1.0.0
 
